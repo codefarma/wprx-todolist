@@ -52,7 +52,7 @@ class _TodoList extends ActiveRecord
 	/**
 	 * @var bool		Site specific table? (for multisites)
 	 */
-	protected static $site_specific = FALSE;
+	protected static $site_specific = TRUE;
 	
 	/**
 	 * @var	string
