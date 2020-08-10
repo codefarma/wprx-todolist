@@ -1,0 +1,11 @@
+{
+    "name": "wprx/todolist",
+    "description": "To Do List",
+    "type": "project",
+    "require": {},
+	"autoload": {
+		"psr-4": {
+		  "WPRX\\TodoList\\": "classes/"
+		}
+	}
+}

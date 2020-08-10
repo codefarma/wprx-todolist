@@ -1,0 +1,6 @@
+bin/
+tests/test-sample.php
+vendor/
+data/annotations/*
+data/install-meta.php
+data/instance-meta.php
