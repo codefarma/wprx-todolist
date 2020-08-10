@@ -73,12 +73,12 @@ class _TodoList extends ActiveRecord
 	/**
 	 * @var	string
 	 */
-	public static $lang_singular = 'Record';
+	public static $lang_singular = 'List';
 	
 	/**
 	 * @var	string
 	 */
-	public static $lang_plural = 'Records';
+	public static $lang_plural = 'Lists';
 	
 	/**
 	 * @var	string
