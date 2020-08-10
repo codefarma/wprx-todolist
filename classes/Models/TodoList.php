@@ -37,6 +37,7 @@ class _TodoList extends ActiveRecord
 	protected static $columns = array(
 		'id',
 		'title' => [ 'type' => 'varchar', 'length' => 255 ],
+		'user_id' => [ 'type' => 'int', 'length' => 20 ],
 	);
 	
 	/**
