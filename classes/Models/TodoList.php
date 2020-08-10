@@ -29,7 +29,7 @@ class _TodoList extends ActiveRecord
 	/**
 	 * @var	string		Table name
 	 */
-	protected static $table = 'todolist_todolist';
+	protected static $table = 'todo_lists';
 	
 	/**
 	 * @var	array		Table columns
