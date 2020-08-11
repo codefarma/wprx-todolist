@@ -17,6 +17,8 @@ if ( class_exists( 'WPRXTodoListPlugin' ) ) {
 	return;
 }
 
+use WPRX\TodoList\Models;
+
 /* Autoloaders */
 include_once __DIR__ . '/includes/plugin-bootstrap.php';
 
@@ -50,5 +52,14 @@ add_action( 'mwp_framework_init', function()
 	
 	/* Register settings to a WP Admin page */
 	// $framework->attach( $settings );
-	
+
+	Models\TodoList::createController('admin', [
+		'adminPage' => [
+			'title' => 'To Do Lists',
+			'menu' => 'To Do Lists',
+			'type' => 'menu',
+			'menu_submenu' => 'Lists',
+			'icon' => 'dashicons-editor-ol',
+		],
+	]);
 } );
