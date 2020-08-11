@@ -6,6 +6,10 @@ return <<<'JSON'
     "slug": "wprx-todolist",
     "author": "Kevin Carwile",
     "description": "A WordPress plugin that helps you keep track of the things you need to to.",
-    "name": "To Do List"
+    "name": "To Do List",
+    "tables": [],
+    "ms_tables": [
+        "todo_lists"
+    ]
 }
 JSON;
