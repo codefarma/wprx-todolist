@@ -51,11 +51,10 @@ Success: Activated 1 of 1 plugins.
 ```
 
 ### Make the initial commit for the plugin:
-`$ cd wp-content/plugins/wprx-todolist`
-`$ git init`
-`$ git add -A && git commit -m "Inital commit"`
+`$ cd wp-content/plugins/wprx-todolist`  
+`$ git init`  
+`$ git add -A && git commit -m "Inital commit"`  
 
-```
 
 Reference:
 https://github.com/codefarma/wprx-todolist/commit/9f1f67f64d331ae6af7d30e5bb4ff549506f7fc9
