@@ -87,8 +87,7 @@ Creating new plugin class file...
 Success: Class added sucessfully.
 ```
 
-Yields:
-```
+```php
 /**
  * TodoList Model [ActiveRecord]
  *
@@ -202,7 +201,7 @@ Now let's make some adjustments to the auto-generated model to fit our needs, an
 
 #### Make database table name more human friendly:
 
-```
+```php
  	/**
  	 * @var	string		Table name
  	 */
@@ -218,7 +217,7 @@ https://github.com/codefarma/wprx-todolist/commit/4d6d0f44afe59123aaeac186ae4659
 
 #### Add an attribute to track the list owner
 
-```
+```php
 	protected static $columns = array(
 		'id',
 		'title' => [ 'type' => 'varchar', 'length' => 255 ],
@@ -233,7 +232,7 @@ https://github.com/codefarma/wprx-todolist/commit/44082afcd16b6906ad128bace3602d
 
 #### Allow every site in a multisite install to have its own separate to do lists:
 
-```
+```php
  	/**
  	 * @var bool		Site specific table? (for multisites)
  	 */
@@ -249,7 +248,7 @@ https://github.com/codefarma/wprx-todolist/commit/0d55bd3748815bf2a13addccd39c87
 
 #### Adjust the human readable name of the TodoList model
 
-```
+```php
  	/**
  	 * @var	string
  	 */
@@ -293,7 +292,7 @@ https://github.com/codefarma/wprx-todolist/commit/ebd11bb33aeb500d66f80dca8acab8
 
 At this point, we are now fully capable of using our TodoList model class to CRUD data and persist it to the database. To test it out, use your favorite PHP Console for WordPress to execute the following code:
 
-```
+```php
 $list = new WPRX\TodoList\Models\TodoList;
 $list->title = "My First List!";
 $list->user_id = 1;
@@ -308,7 +307,7 @@ The next thing we want to do is generate an administrative interface in the WP A
 
 The preferred hook to register your admin interfaces using the MWP Framework is the 'mwp_framework_init' action. Therefore, an ideal place to put the code which registers your admin pages is inside the existing callback which is already registered to the 'mwp_framework_init' action by your plugin.php file.
 
-```
+```php
 use WPRX\TodoList\Models;
 
 	/* Register settings to a WP Admin page */
@@ -339,7 +338,7 @@ Let's add a new to do list:
 
 We're doing great. Now lets customize the display table on the To Do Lists admin page to make some of the displayed columns more user friendly. We're going to make the User Id column show the user name instead of the user id, and we'll remove the Id column from the display.
 
-```
+```php
 		'tableConfig' => [
 			'columns' => [
 				'title' => __( 'Title', 'wprx-todolist' ),
@@ -372,7 +371,7 @@ Success: Class added sucessfully.
 
 **Customizations:**
 
-```
+```php
  	/**
  	 * @var	string		Table name
  	 */
@@ -416,7 +415,7 @@ https://github.com/codefarma/wprx-todolist/commit/01deb7c62a2376af39e2a836c0a2b4
 
 We'll also want to create an admin interface that is used for CRUD'ing the task data as well.
 
-```
+```php
 	Models\TodoTask::createController('admin', [
 		'adminPage' => [
 			'title' => 'To Do Tasks',
@@ -435,5 +434,99 @@ We'll also want to create an admin interface that is used for CRUD'ing the task 
 
 Reference:
 https://github.com/codefarma/wprx-todolist/commit/38870e6162ed9a12bd7a333a8945598035fcd45e
+
+Things are moving along nicely. But it's become obvious that todo tasks would be better managed through the associated todo list so we can see which tasks are associated with any given list. There is a common pattern that we can use to accomplish this, which is to embed a management table into a tab on the edit form for a `TodoList`, so that the tasks for that list can be managed from the edit screen of the list itself. We will also limit the tasks shown on that management table to only tasks that belong to the list being edited.
+
+To pull this off, we need to override the form builder for the `TodoList` model and generate our own customized form with the necessary elements.
+
+```php
+	/**
+	 * Get editing form
+	 *
+	 * @return	MWP\Framework\Helpers\Form
+	 */
+	protected function buildEditForm()
+	{
+		$form = static::createForm( 'edit' );
+
+		$form->addTab( 'details_tab', array(
+			'title' => __( 'Details', 'wprx-todolist' ),
+		));
+		
+		$form->addField( 'title', 'text', array(
+			'label' => __( 'Title', 'wprx-todolist' ),
+			'data' => $this->title,
+			'required' => true,
+		));
+
+		$form->addField( 'user_id', 'text', array(
+			'label' => __( 'List Owner (user id)', 'wprx-todolist' ),
+			'data' => $this->user_id,
+			'required' => true,
+		));
+
+		// Add a tab to manage the tasks associated with this list. But ONLY if this list has been saved 
+		// previously and has an ID. Otherwise, there is no point in trying to associate tasks with it
+		if ( $this->id() ) {
+
+			// Add a tab to contain our task list
+			$form->addTab( 'tasks_tab', array(
+				'title' => __( 'Tasks', 'wprx-todolist' ),
+			));
+
+			// Embed a TodoTask management table into our form
+			$form->embedRecords( 'tasks_table', TodoTask::getController('admin'), array(
+				// customize a few aspects of our embedded display table
+				'tableConfig' => [ 'bulkActions' => [], 'perPage' => 10000 ],
+				
+				// specify criteria to select the records which are shown on this table
+				'itemsWhere' => [ 'list_id=%d', $this->id() ],
+				
+				// specify url parameters to add to management links (add, edit, etc) in this table
+				'actionParams' => [ 'list_id' => $this->id() ],
+			));
+
+		}
+
+		$form->addField( 'submit', 'submit', [ 
+			'row_attr' => [ 'class' => 'text-center' ],
+			'label' => 'Save', 
+		], '');
+		
+		return $form;		
+	}	
+```
+
+Reference:
+https://github.com/codefarma/wprx-todolist/commit/4788270c539eddb5c65d085532f32456889b1f47
+
+And since we are modifying the structure of the edit form slightly by embedding our basic TodoList details into their own tab, we must also account for that in the form processing callback so that the TodoList details are saved correctly when the form is submitted.
+
+```php
+	/**
+	 * Process Form values
+	 *
+	 * @param   array   $values   form data
+	 * @param   string  $type     the type of form
+	 * @return  void
+	 */
+	public function processEditForm( $values )
+	{
+		parent::processEditForm( $values['details_tab'] );
+	}
+```
+
+Reference:
+https://github.com/codefarma/wprx-todolist/commit/fcbc48eaf0925ad42758a7ca29994d54eee6fe05
+
+Now you can create a new task for your todo list that you created earlier by visiting the edit screen of the todo list. Click the "Create Task" button and fill in the details and then click 'Save'.
+
+* Title: Complete the tutorial
+* List Id: 1
+* Status: todo
+
+We have now successfully created a TodoList and assigned a TodoTask to it!  
+
+But you'll notice that after saving the new task, we were redirected back to the main tasks management screen that shows ALL system tasks, and not the "Tasks" tab of the TodoList that we were on previously. We also had to manually enter the list id when we created the task, which is not an ideal user experience. So the next thing we should do is to tap into the edit form for the TodoTask the same as we did with the TodoList and make some customizations.
 
 
