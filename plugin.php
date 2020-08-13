@@ -77,4 +77,19 @@ add_action( 'mwp_framework_init', function()
 			],
 		]
 	]);
+
+	Models\TodoTask::createController('admin', [
+		'adminPage' => [
+			'title' => 'To Do Tasks',
+			'menu' => 'Tasks',
+			'type' => 'submenu',
+			'parent' => Models\TodoList::getController('admin')->adminPage->slug,
+		],
+		'tableConfig' => [
+			'columns' => [
+				'title' => __( 'Title', 'wprx-todolist' ),
+				'status' => __( 'Task Status', 'wprx-todolist' ),
+			],
+		]
+	]);	
 } );
