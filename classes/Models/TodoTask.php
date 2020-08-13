@@ -101,4 +101,69 @@ class _TodoTask extends ActiveRecord
 	 */
 	public static $lang_delete = 'Delete';
 
+	/**
+	 * Get editing form
+	 *
+	 * @return	MWP\Framework\Helpers\Form
+	 */
+	protected function buildEditForm()
+	{
+		$form = static::createForm( 'edit' );
+
+		// Validate the list we are associating this task with
+		try {
+			$list_id = $this->list_id ?: (int) $_REQUEST['list_id'];
+			$list = TodoList::load( $list_id );
+		}
+		catch( \OutOfRangeException $e ) {
+			$form->addHtml( 'error', 'Invalid todo list id supplied in request url.' );
+			return $form;
+		}
+
+		$form->addTab( 'details_tab', array(
+			'title' => 'Details',
+		));
+
+		$form->addField( 'list_id', 'hidden', [
+			'data' => $list_id 
+		]);
+
+		$form->addField( 'title', 'text', array(
+			'label' => __( 'Title', 'wprx-todolist' ),
+			'data' => $this->title,
+			'required' => true,
+		));
+
+		$form->addField( 'status', 'choice', array(
+			'label' => __( 'Task Status', 'wprx-todolist' ),
+			'data' => $this->status ?: 'todo',
+			'choices' => array(
+				'To Do' => 'todo',
+				'In Progress' => 'in_progress',
+				'Completed' => 'completed',
+			),
+			'required' => true,
+			'expanded' => true,
+		));
+
+		$form->addField( 'submit', 'submit', [ 
+			'row_attr' => [ 'class' => 'text-center' ],
+			'label' => 'Save', 
+		], '');
+		
+		return $form;		
+	}
+
+	/**
+	 * Process Form values
+	 *
+	 * @param   array   $values   form data
+	 * @param   string  $type     the type of form
+	 * @return  void
+	 */
+	public function processEditForm( $values )
+	{
+		parent::processEditForm( $values['details_tab'] );
+	}	
+
 }
