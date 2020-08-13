@@ -154,6 +154,19 @@ class _TodoList extends ActiveRecord
 		], '');
 		
 		return $form;		
-	}	
+	}
+
+	/**
+	 * Process Form values
+	 *
+	 * @param   array   $values   form data
+	 * @param   string  $type     the type of form
+	 * @return  void
+	 */
+	public function processEditForm( $values )
+	{
+		parent::processEditForm( $values['details_tab'] );
+	}
+	
 
 }
