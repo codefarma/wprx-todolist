@@ -61,5 +61,20 @@ add_action( 'mwp_framework_init', function()
 			'menu_submenu' => 'Lists',
 			'icon' => 'dashicons-editor-ol',
 		],
+		'tableConfig' => [
+			'columns' => [
+				'title' => __( 'Title', 'wprx-todolist' ),
+				'user_id' => __( 'Owner', 'wprx-todolist' ),
+			],
+			'handlers' => [
+				'user_id' => function( $row ) {
+					if ( $user = get_user_by('id', $row['user_id']) ) {
+						return "{$user->display_name} ({$user->user_email})"; 
+					}
+
+					return "--";
+				}
+			],
+		]
 	]);
 } );
