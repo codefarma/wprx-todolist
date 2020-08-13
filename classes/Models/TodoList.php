@@ -101,6 +101,18 @@ class _TodoList extends ActiveRecord
 	public static $lang_delete = 'Delete';
 
 	/**
+	 * Get controller actions
+	 *
+	 * @return	array
+	 */
+	public function getControllerActions()
+	{
+		$actions = parent::getControllerActions();
+		unset( $actions['view'] );
+		return $actions;
+	}
+	
+	/**
 	 * Get editing form
 	 *
 	 * @return	MWP\Framework\Helpers\Form
@@ -167,6 +179,6 @@ class _TodoList extends ActiveRecord
 	{
 		parent::processEditForm( $values['details_tab'] );
 	}
-	
+
 
 }
