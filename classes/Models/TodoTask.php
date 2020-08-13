@@ -29,7 +29,7 @@ class _TodoTask extends ActiveRecord
 	/**
 	 * @var	string		Table name
 	 */
-	protected static $table = 'todolist_todotask';
+	protected static $table = 'todolist_tasks';
 	
 	/**
 	 * @var	array		Table columns
@@ -37,6 +37,8 @@ class _TodoTask extends ActiveRecord
 	protected static $columns = array(
 		'id',
 		'title' => [ 'type' => 'varchar', 'length' => 255 ],
+		'list_id' => [ 'type' => 'int', 'length' => 20 ],
+		'status' => [ 'type' => 'varchar', 'length' => 32 ],
 	);
 	
 	/**
@@ -52,7 +54,7 @@ class _TodoTask extends ActiveRecord
 	/**
 	 * @var bool		Site specific table? (for multisites)
 	 */
-	protected static $site_specific = FALSE;
+	protected static $site_specific = TRUE;
 	
 	/**
 	 * @var	string
@@ -72,12 +74,12 @@ class _TodoTask extends ActiveRecord
 	/**
 	 * @var	string
 	 */
-	public static $lang_singular = 'Record';
+	public static $lang_singular = 'Task';
 	
 	/**
 	 * @var	string
 	 */
-	public static $lang_plural = 'Records';
+	public static $lang_plural = 'Tasks';
 	
 	/**
 	 * @var	string
