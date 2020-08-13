@@ -150,6 +150,13 @@ class _TodoTask extends ActiveRecord
 			'row_attr' => [ 'class' => 'text-center' ],
 			'label' => 'Save', 
 		], '');
+
+		// Return to the parent screen after saving
+		$form->onComplete( function() {
+			$controller = TodoList::getController( 'admin' );
+			wp_redirect( $controller->getUrl( [ 'do' => 'edit', 'id' => $this->list_id, '_tab' => 'tasks_tab' ] ) );
+			exit;
+		});		
 		
 		return $form;		
 	}
