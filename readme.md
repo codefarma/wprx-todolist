@@ -1,4 +1,6 @@
-Project Description:
+# WordPress Plugin Tutorial
+
+**Project Description:**
 
 Build a todo list plugin for WordPress which allows the user to create "To Do" lists, add tasks to their to do lists, and track the status of those tasks.
 
