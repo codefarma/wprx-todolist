@@ -9,7 +9,8 @@ return <<<'JSON'
     "name": "To Do List",
     "tables": [],
     "ms_tables": [
-        "todo_lists"
+        "todo_lists",
+        "todolist_tasks"
     ]
 }
 JSON;
