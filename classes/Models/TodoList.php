@@ -100,4 +100,60 @@ class _TodoList extends ActiveRecord
 	 */
 	public static $lang_delete = 'Delete';
 
+	/**
+	 * Get editing form
+	 *
+	 * @return	MWP\Framework\Helpers\Form
+	 */
+	protected function buildEditForm()
+	{
+		$form = static::createForm( 'edit' );
+
+		$form->addTab( 'details_tab', array(
+			'title' => __( 'Details', 'wprx-todolist' ),
+		));
+		
+		$form->addField( 'title', 'text', array(
+			'label' => __( 'Title', 'wprx-todolist' ),
+			'data' => $this->title,
+			'required' => true,
+		));
+
+		$form->addField( 'user_id', 'text', array(
+			'label' => __( 'List Owner (user id)', 'wprx-todolist' ),
+			'data' => $this->user_id,
+			'required' => true,
+		));
+
+		// Add a tab to manage the tasks associated with this list. But ONLY if this list has been saved 
+		// previously and has an ID. Otherwise, there is no point in trying to associate tasks with it
+		if ( $this->id() ) {
+
+			// Add a tab to contain our task list
+			$form->addTab( 'tasks_tab', array(
+				'title' => __( 'Tasks', 'wprx-todolist' ),
+			));
+
+			// Embed a TodoTask management table into our form
+			$form->embedRecords( 'tasks_table', TodoTask::getController('admin'), array(
+				// customize a few aspects of our embedded display table
+				'tableConfig' => [ 'bulkActions' => [], 'perPage' => 10000 ],
+				
+				// specify criteria to select the records which are shown on this table
+				'itemsWhere' => [ 'list_id=%d', $this->id() ],
+				
+				// specify url parameters to add to management links (add, edit, etc) in this table
+				'actionParams' => [ 'list_id' => $this->id() ],
+			));
+
+		}
+
+		$form->addField( 'submit', 'submit', [ 
+			'row_attr' => [ 'class' => 'text-center' ],
+			'label' => 'Save', 
+		], '');
+		
+		return $form;		
+	}	
+
 }
