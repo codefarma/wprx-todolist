@@ -521,7 +521,7 @@ And since we are modifying the structure of the edit form slightly by embedding 
 Reference:
 https://github.com/codefarma/wprx-todolist/commit/fcbc48eaf0925ad42758a7ca29994d54eee6fe05
 
-Now you can create a new task for your todo list that you created earlier by visiting the edit screen of the todo list. Click the "Create Task" button and fill in the details and then click 'Save'.
+Now you can create a new task for your todo list that you created earlier by visiting the edit screen of the todo list and going to the "Tasks" tab. Click the "Create Task" button and fill in the details and then click 'Save'.
 
 * Title: Complete the tutorial
 * List Id: 1
@@ -530,5 +530,135 @@ Now you can create a new task for your todo list that you created earlier by vis
 We have now successfully created a TodoList and assigned a TodoTask to it!  
 
 But you'll notice that after saving the new task, we were redirected back to the main tasks management screen that shows ALL system tasks, and not the "Tasks" tab of the TodoList that we were on previously. We also had to manually enter the list id when we created the task, which is not an ideal user experience. So the next thing we should do is to tap into the edit form for the TodoTask the same as we did with the TodoList and make some customizations.
+
+### Automatically assign the list id
+
+```php
+	/**
+	 * Get editing form
+	 *
+	 * @return	MWP\Framework\Helpers\Form
+	 */
+	protected function buildEditForm()
+	{
+		$form = static::createForm( 'edit' );
+
+		// Validate the list we are associating this task with
+		try {
+			$list_id = $this->list_id ?: (int) $_REQUEST['list_id'];
+			$list = TodoList::load( $list_id );
+		}
+		catch( \OutOfRangeException $e ) {
+			$form->addHtml( 'error', 'Invalid todo list id supplied in request url.' );
+			return $form;
+		}
+
+		$form->addTab( 'details_tab', array(
+			'title' => 'Details',
+		));
+
+		$form->addField( 'list_id', 'hidden', [
+			'data' => $list_id 
+		]);
+
+		$form->addField( 'title', 'text', array(
+			'label' => __( 'Title', 'wprx-todolist' ),
+			'data' => $this->title,
+			'required' => true,
+		));
+
+		$form->addField( 'status', 'choice', array(
+			'label' => __( 'Task Status', 'wprx-todolist' ),
+			'data' => $this->status ?: 'todo',
+			'choices' => array(
+				'To Do' => 'todo',
+				'In Progress' => 'in_progress',
+				'Completed' => 'completed',
+			),
+			'required' => true,
+			'expanded' => true,
+		));
+
+		$form->addField( 'submit', 'submit', [ 
+			'row_attr' => [ 'class' => 'text-center' ],
+			'label' => 'Save', 
+		], '');
+		
+		return $form;		
+	}
+
+	/**
+	 * Process Form values
+	 *
+	 * @param   array   $values   form data
+	 * @param   string  $type     the type of form
+	 * @return  void
+	 */
+	public function processEditForm( $values )
+	{
+		parent::processEditForm( $values['details_tab'] );
+	}	
+```
+
+Reference:
+https://github.com/codefarma/wprx-todolist/commit/dc11e7b10f26196a40215c334a7b486a2f1a1082
+
+### Redirect upon successful form submission
+
+There are two redirects that we can do to improve the workflow and UX for our admin users. One would be to redirect back to the "Tasks" tab on the list edit screen after creating/editing a task item.
+
+```php
+		// Return to the parent screen after saving
+		$form->onComplete( function() {
+			$controller = TodoList::getController( 'admin' );
+			wp_redirect( $controller->getUrl( [ 'do' => 'edit', 'id' => $this->list_id, '_tab' => 'tasks_tab' ] ) );
+			exit;
+		});		
+```
+
+Reference:
+https://github.com/codefarma/wprx-todolist/commit/a1a9e679a23780d635448549b5fe4701241f72be
+
+The other improvement we can make is to redirect to the "Tasks" tab automatically after creating a new TodoList record, since the logical next step to creating a todo list will be to add some tasks to it.
+
+```php
+		if ( ! $this->id() ) {
+			// Redirect to the tasks tab as the next step after creating a new list
+			$form->onComplete( function() {
+				$controller = static::getController( 'admin' );
+				wp_redirect( $controller->getUrl( [ 'do' => 'edit', 'id' => $this->id(), '_tab' => 'tasks_tab' ] ) );
+				exit;
+			});
+		}
+```
+
+Reference:
+https://github.com/codefarma/wprx-todolist/commit/a330199d5a42e6b02cdcb2108d40fde7d55d7cb4
+
+### Customize the action links in the management table
+
+So now that we're on a roll, let's make some more UX adjustments to our management tables to improve things a bit further. Another thing we can do is to adjust the action links that display for each record in a management table. By default, the MWP framework adds an action link to "View", "Edit", and "Delete" records. The default "View" screen for a record just shows a table with the values for all columns on the record. In many cases, the view screen for a record is not really needed as the edit screen also serves as a view screen for the most part, so we can make life easier by just removing the "View" action link altogether.
+
+```php
+	/**
+	 * Get controller actions
+	 *
+	 * @return	array
+	 */
+	public function getControllerActions()
+	{
+		$actions = parent::getControllerActions();
+		unset( $actions['view'] );
+		return $actions;
+	}
+```
+
+Reference:
+https://github.com/codefarma/wprx-todolist/commit/c4c4b89c2d6d31d11a07e03641d153398995adca
+
+### Add model behavior to delete child nodes
+
+It may now occur to you that if we delete a todo list from the system, any todo tasks that have been created for it will become orphaned. We should do our due diligence and delete any todo tasks for a todo list automatically when it is deleted. For this, we'll just tap into the `delete()` method which is part of the `ActiveRecord` design pattern and delete any children on the fly.
+
 
 
