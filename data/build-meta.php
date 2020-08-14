@@ -123,6 +123,20 @@ return <<<'JSON'
                     "unsigned": false,
                     "values": [],
                     "zerofill": false
+                },
+                "priority": {
+                    "allow_null": true,
+                    "auto_increment": false,
+                    "binary": false,
+                    "comment": "",
+                    "decimals": null,
+                    "default": null,
+                    "length": 5,
+                    "name": "priority",
+                    "type": "INT",
+                    "unsigned": false,
+                    "values": [],
+                    "zerofill": false
                 }
             },
             "indexes": {
