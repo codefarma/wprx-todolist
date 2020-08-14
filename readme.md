@@ -658,15 +658,96 @@ https://github.com/codefarma/wprx-todolist/commit/c4c4b89c2d6d31d11a07e03641d153
 
 ### Add Behavior To Delete Children Nodes
 
-It may now occur to you that if we delete a todo list from the system, any todo tasks that have been created for it will become orphaned. Knowing this, let's do our due diligence and delete any todo tasks associate with a todo list when the todo list is deleted. For this, we'll tap into the `delete()` method which is part of the `ActiveRecord` design pattern and delete any children on the fly.
+It may now occur to you that if we delete a todo list from the system, any todo tasks that have been created for it will become orphaned. Knowing this, let's take a moment and delete any todo tasks associated with a todo list when the todo list is deleted. We'll use the built in `delete()` method which is part of the `ActiveRecord` design pattern and delete any child tasks on the fly.
 
 Reference:  
 https://github.com/codefarma/wprx-todolist/commit/a330199d5a42e6b02cdcb2108d40fde7d55d7cb4
 
+### Make the tasks in a list re-orderable
+
+Another quick improvement that we can make is to allow the end user to re-order their tasks within a list. When records need to be sequenced, you can use the MWP Framework to help out. By adding a new column to save the task priority level to, and specifying that column as the 'sequence' column on the `TodoTask` model, we can quickly gain re-ordering capabilities.
+
+* When specifying a sequence column on a model, records loaded with the `loadWhere()` class method will automatically be ordered by the sequence column as default ordering.
+* When viewing a record management table, you'll automatically be able to drag and drop records into different positions to adjust their sequence.
+
+```php
+	/**
+	 * @var	array		Table columns
+	 */
+	protected static $columns = array(
+		'id',
+		'title' => [ 'type' => 'varchar', 'length' => 255 ],
+		'list_id' => [ 'type' => 'int', 'length' => 20 ],
+		'status' => [ 'type' => 'varchar', 'length' => 32 ],
++		'priority' => [ 'type' => 'int', 'length' => 5 ],
+	);
+
+ 	/**
+ 	 * @var	string
+ 	 */
+-	public static $sequence_col;
++	public static $sequence_col = 'priority';
+
+```
+
+Reference:  
+https://github.com/codefarma/wprx-todolist/commit/6d2f5ee70fed4ecbd15478bcd7f1060f812c83a5
+
+And after adding a new column to a model, we will need to deploy that column to our database, and then update our plugin schema with the details of that column definition.
+
+`$ wp mwp deploy-table wprx-todolist all`
+
+```
+Added column wp_todolist_tasks.priority
+```
+
+`$ wp mwp update-schema wprx-todolist`
+
+```
+Success: Plugin schema generated/updated.
+```
+
+Reference:  
+https://github.com/codefarma/wprx-todolist/commit/a38c5039ddccb59612aace603a8dba7612a34630
+
+### Add additional todo list details on management table
+
+The management table that we configured to allow us to CRUD the todo lists in the system is not limited to showing just data points that exist as columns on the model. We can add our own additional data points to the display as well. Let's add a column that shows the total number of tasks that are associated with any given todo list on its management table.
+
+```php
+		'tableConfig' => [
+			'columns' => [
+				'title' => __( 'Title', 'wprx-todolist' ),
+				'user_id' => __( 'Owner', 'wprx-todolist' ),
++				'task_count' => __( 'Task Count', 'wprx-todolist' ),
+			],
+			'handlers' => [
+				'user_id' => function( $row ) {
+					if ( $user = get_user_by('id', $row['user_id']) ) {
+						return "{$user->display_name} ({$user->user_email})"; 
+					}
+
+					return "--";
+				},
++				'task_count' => function( $row ) {
++					return Models\TodoTask::countWhere([ 'list_id=%d', $row['id'] ]);
++				},
+			],
+		]
+```
+
+Reference:  
+https://github.com/codefarma/wprx-todolist/commit/2560725356dc6d56ca57efd61fff798db76eb3c1
+
+### Add a new bulk action for todo lists
+
+Let's add a new bulk action to our todo lists that we can use to complete all tasks associated with that todo list. This can be done in two steps. First step is to create a method on the `TodoList` model which performs our action, and then the second step is to add that method to the list of bulk actions available in the management table.
+
+
+
 Tutorial roadmap:
 
 * User select autocomplete on list edit form
-* Additional list management table info (task stats, etc.)
 * List management bulk actions (reset, complete)
 * List management search/sort/filter controls
 * Front end list view
