@@ -39,6 +39,7 @@ class _TodoTask extends ActiveRecord
 		'title' => [ 'type' => 'varchar', 'length' => 255 ],
 		'list_id' => [ 'type' => 'int', 'length' => 20 ],
 		'status' => [ 'type' => 'varchar', 'length' => 32 ],
+		'priority' => [ 'type' => 'int', 'length' => 5 ],
 	);
 	
 	/**
@@ -64,7 +65,7 @@ class _TodoTask extends ActiveRecord
 	/**
 	 * @var	string
 	 */
-	public static $sequence_col;
+	public static $sequence_col = 'priority';
 	
 	/**
 	 * @var	string
@@ -112,7 +113,7 @@ class _TodoTask extends ActiveRecord
 		unset( $actions['view'] );
 		return $actions;
 	}
-	
+
 	/**
 	 * Get editing form
 	 *
