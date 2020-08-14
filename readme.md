@@ -58,7 +58,7 @@ Success: Activated 1 of 1 plugins.
 `$ git add -A && git commit -m "Inital commit"`  
 
 
-Reference:
+Reference:  
 https://github.com/codefarma/wprx-todolist/commit/9f1f67f64d331ae6af7d30e5bb4ff549506f7fc9
 
 
@@ -194,7 +194,7 @@ class _TodoList extends ActiveRecord
 
 ```
 
-Reference:
+Reference:  
 https://github.com/codefarma/wprx-todolist/commit/b729d9d047865689ec81697a1fda80f0e6f6910a
 
 ### Customize TodoList Model
@@ -214,7 +214,7 @@ Now let's make some adjustments to the auto-generated model to fit our needs, an
  	 * @var	array		Table columns
 ```
 
-Reference:
+Reference:  
 https://github.com/codefarma/wprx-todolist/commit/4d6d0f44afe59123aaeac186ae4659b72e8e64c9
 
 #### Add an attribute to track the list owner
@@ -229,7 +229,7 @@ https://github.com/codefarma/wprx-todolist/commit/4d6d0f44afe59123aaeac186ae4659
 	/**
 ```
 
-Reference:
+Reference:  
 https://github.com/codefarma/wprx-todolist/commit/44082afcd16b6906ad128bace3602de4a4e0f9db
 
 #### Allow every site in a multisite install to have its own separate to do lists:
@@ -245,7 +245,7 @@ https://github.com/codefarma/wprx-todolist/commit/44082afcd16b6906ad128bace3602d
  	 * @var	string
 ```
 
-Reference:
+Reference:  
 https://github.com/codefarma/wprx-todolist/commit/0d55bd3748815bf2a13addccd39c87da31a69ec5
 
 #### Adjust the human readable name of the TodoList model
@@ -267,7 +267,7 @@ https://github.com/codefarma/wprx-todolist/commit/0d55bd3748815bf2a13addccd39c87
  	 * @var	string
 ```
 
-Reference:
+Reference:  
 https://github.com/codefarma/wprx-todolist/commit/3d89e83724fc61b9728c796804c44b715e023733
 
 ### Provision Database Tables for TodoList Model
@@ -289,7 +289,7 @@ After we've made changes to our local database so that our plugin can save its d
 Success: Plugin schema generated/updated.
 ```
 
-Reference:
+Reference:  
 https://github.com/codefarma/wprx-todolist/commit/ebd11bb33aeb500d66f80dca8acab8a9f5f3b381
 
 At this point, we are now fully capable of using our TodoList model class to CRUD data and persist it to the database. To test it out, use your favorite PHP Console for WordPress to execute the following code:
@@ -327,7 +327,7 @@ use WPRX\TodoList\Models;
 } );
 ```
 
-Reference:
+Reference:  
 https://github.com/codefarma/wprx-todolist/commit/901efbd398ed7cd92b4521cdb85ac9ad60b7fb63
 
 Let's add a new to do list:
@@ -358,7 +358,7 @@ We're doing great. Now lets customize the display table on the To Do Lists admin
 		]
 ```
 
-Reference:
+Reference:  
 https://github.com/codefarma/wprx-todolist/commit/23e3de5cd4f4f2fe58e4138093c7b1ad2b2b4a8c
 
 ## Create TodoTask Model
@@ -395,9 +395,9 @@ Success: Class added sucessfully.
 +	protected static $site_specific = TRUE;
 ```
 
-References:
-https://github.com/codefarma/wprx-todolist/commit/e49ad7cd52cbd3229ee943e6dd56dee5a9fff0d4
-https://github.com/codefarma/wprx-todolist/commit/cbe6cb46d7fe46e977e1cf03e1aba3b884465ed0
+References:  
+https://github.com/codefarma/wprx-todolist/commit/e49ad7cd52cbd3229ee943e6dd56dee5a9fff0d4  
+https://github.com/codefarma/wprx-todolist/commit/cbe6cb46d7fe46e977e1cf03e1aba3b884465ed0  
 
 `$ wp mwp deploy-table wprx-todolist "Models\TodoTask"`
 
@@ -412,7 +412,7 @@ Success: Database table updated.
 Success: Plugin schema generated/updated.
 ```
 
-Reference:
+Reference:  
 https://github.com/codefarma/wprx-todolist/commit/01deb7c62a2376af39e2a836c0a2b41765aa7d45
 
 We'll also want to create an admin interface that is used for CRUD'ing the task data as well.
@@ -434,7 +434,7 @@ We'll also want to create an admin interface that is used for CRUD'ing the task 
 	]);	
 ```
 
-Reference:
+Reference:  
 https://github.com/codefarma/wprx-todolist/commit/38870e6162ed9a12bd7a333a8945598035fcd45e
 
 Things are moving along nicely. But it's become obvious that todo tasks would be better managed through the associated todo list so we can see which tasks are associated with any given list. There is a common pattern that we can use to accomplish this, which is to embed a management table into a tab on the edit form for a `TodoList`, so that the tasks for that list can be managed from the edit screen of the list itself. We will also limit the tasks shown on that management table to only tasks that belong to the list being edited.
@@ -499,7 +499,7 @@ To pull this off, we need to override the form builder for the `TodoList` model 
 	}	
 ```
 
-Reference:
+Reference:  
 https://github.com/codefarma/wprx-todolist/commit/4788270c539eddb5c65d085532f32456889b1f47
 
 And since we are modifying the structure of the edit form slightly by embedding our basic TodoList details into their own tab, we must also account for that in the form processing callback so that the TodoList details are saved correctly when the form is submitted.
@@ -518,7 +518,7 @@ And since we are modifying the structure of the edit form slightly by embedding 
 	}
 ```
 
-Reference:
+Reference:  
 https://github.com/codefarma/wprx-todolist/commit/fcbc48eaf0925ad42758a7ca29994d54eee6fe05
 
 Now you can create a new task for your todo list that you created earlier by visiting the edit screen of the todo list and going to the "Tasks" tab. Click the "Create Task" button and fill in the details and then click 'Save'.
@@ -600,7 +600,7 @@ But you'll notice that after saving the new task, we were redirected back to the
 	}	
 ```
 
-Reference:
+Reference:  
 https://github.com/codefarma/wprx-todolist/commit/dc11e7b10f26196a40215c334a7b486a2f1a1082
 
 ### Redirect upon successful form submission
@@ -616,7 +616,7 @@ There are two redirects that we can do to improve the workflow and UX for our ad
 		});		
 ```
 
-Reference:
+Reference:  
 https://github.com/codefarma/wprx-todolist/commit/a1a9e679a23780d635448549b5fe4701241f72be
 
 The other improvement we can make is to redirect to the "Tasks" tab automatically after creating a new TodoList record, since the logical next step to creating a todo list will be to add some tasks to it.
@@ -632,8 +632,8 @@ The other improvement we can make is to redirect to the "Tasks" tab automaticall
 		}
 ```
 
-Reference:
-https://github.com/codefarma/wprx-todolist/commit/a330199d5a42e6b02cdcb2108d40fde7d55d7cb4
+Reference:  
+https://github.com/codefarma/wprx-todolist/commit/f9101bef748a5438c712cc27249af95883956a86
 
 ### Customize the action links in the management table
 
@@ -656,9 +656,18 @@ So now that we're on a roll, let's make some more UX adjustments to our manageme
 Reference:
 https://github.com/codefarma/wprx-todolist/commit/c4c4b89c2d6d31d11a07e03641d153398995adca
 
-### Add model behavior to delete child nodes
+### Add Behavior To Delete Children Nodes
 
-It may now occur to you that if we delete a todo list from the system, any todo tasks that have been created for it will become orphaned. We should do our due diligence and delete any todo tasks for a todo list automatically when it is deleted. For this, we'll just tap into the `delete()` method which is part of the `ActiveRecord` design pattern and delete any children on the fly.
+It may now occur to you that if we delete a todo list from the system, any todo tasks that have been created for it will become orphaned. Knowing this, let's do our due diligence and delete any todo tasks associate with a todo list when the todo list is deleted. For this, we'll tap into the `delete()` method which is part of the `ActiveRecord` design pattern and delete any children on the fly.
 
+Reference:  
+https://github.com/codefarma/wprx-todolist/commit/a330199d5a42e6b02cdcb2108d40fde7d55d7cb4
 
+Tutorial roadmap:
 
+* User select autocomplete on list edit form
+* Additional list management table info (task stats, etc.)
+* List management bulk actions (reset, complete)
+* List management search/sort/filter controls
+* Front end list view
+* Front end list management
