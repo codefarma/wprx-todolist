@@ -65,6 +65,7 @@ add_action( 'mwp_framework_init', function()
 			'columns' => [
 				'title' => __( 'Title', 'wprx-todolist' ),
 				'user_id' => __( 'Owner', 'wprx-todolist' ),
+				'task_count' => __( 'Task Count', 'wprx-todolist' ),
 			],
 			'handlers' => [
 				'user_id' => function( $row ) {
@@ -73,7 +74,10 @@ add_action( 'mwp_framework_init', function()
 					}
 
 					return "--";
-				}
+				},
+				'task_count' => function( $row ) {
+					return Models\TodoTask::countWhere([ 'list_id=%d', $row['id'] ]);
+				},
 			],
 		]
 	]);
