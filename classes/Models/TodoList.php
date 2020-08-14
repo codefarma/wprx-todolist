@@ -111,7 +111,7 @@ class _TodoList extends ActiveRecord
 		unset( $actions['view'] );
 		return $actions;
 	}
-	
+
 	/**
 	 * Get editing form
 	 *
@@ -164,6 +164,15 @@ class _TodoList extends ActiveRecord
 			'row_attr' => [ 'class' => 'text-center' ],
 			'label' => 'Save', 
 		], '');
+
+		if ( ! $this->id() ) {
+			// Redirect to the tasks tab as the next step after creating a new list
+			$form->onComplete( function() {
+				$controller = static::getController( 'admin' );
+				wp_redirect( $controller->getUrl( [ 'do' => 'edit', 'id' => $this->id(), '_tab' => 'tasks_tab' ] ) );
+				exit;
+			});
+		}
 		
 		return $form;		
 	}
