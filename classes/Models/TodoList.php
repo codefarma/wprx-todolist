@@ -188,6 +188,31 @@ class _TodoList extends ActiveRecord
 	{
 		parent::processEditForm( $values['details_tab'] );
 	}
+	
+	/**
+	 * Get the tasks associated with this list
+	 *
+	 * @return	array[TodoTask]
+	 */
+	public function getTasks() 
+	{
+		return TodoTask::loadWhere([ 'list_id=%d', $this->id() ]);
+	}
 
+	/**
+	 * [ActiveRecord] Delete the record
+	 *
+	 * @return	bool|WP_Error
+	 */
+	public function delete()
+	{	
+		// Remove children
+		foreach( $this->getTasks() as $todoTask ) {
+			$todoTask->delete();
+		}
+		
+		$result = parent::delete();
+		return $result;
+	}
 
 }
