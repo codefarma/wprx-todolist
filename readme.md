@@ -743,12 +743,35 @@ https://github.com/codefarma/wprx-todolist/commit/2560725356dc6d56ca57efd61fff79
 
 Let's add a new bulk action to our todo lists that we can use to complete all tasks associated with that todo list. This can be done in two steps. First step is to create a method on the `TodoList` model which performs our action, and then the second step is to add that method to the list of bulk actions available in the management table.
 
+```php
+	// TodoList.php
+	/**
+	 * Mark all tasks on this todo list as completed
+	 *
+	 * @return void
+	 */
+	public function markAllTasksCompleted()
+	{
+		foreach( $this->getTasks() as $todoTask ) {
+			$todoTask->status = 'completed';
+			$todoTask->save();
+		}
+	}
 
+
+	// plugins.php
+	'bulkActions' => [
+		'delete' => __( 'Delete', 'wprx-todolist' ),
+		'markAllTasksCompleted' => __( 'Mark All Tasks Complete', 'wprx-todolist' ),
+	],
+```
+
+Reference:  
+https://github.com/codefarma/wprx-todolist/commit/5abd10bb0dc92ec2dd7d6c3892e597cfc2df7d57
 
 Tutorial roadmap:
 
 * User select autocomplete on list edit form
-* List management bulk actions (reset, complete)
 * List management search/sort/filter controls
 * Front end list view
 * Front end list management
