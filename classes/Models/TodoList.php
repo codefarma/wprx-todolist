@@ -188,7 +188,7 @@ class _TodoList extends ActiveRecord
 	{
 		parent::processEditForm( $values['details_tab'] );
 	}
-	
+
 	/**
 	 * Get the tasks associated with this list
 	 *
@@ -213,6 +213,19 @@ class _TodoList extends ActiveRecord
 		
 		$result = parent::delete();
 		return $result;
+	}
+
+	/**
+	 * Mark all tasks on this todo list as completed
+	 *
+	 * @return void
+	 */
+	public function markAllTasksCompleted()
+	{
+		foreach( $this->getTasks() as $todoTask ) {
+			$todoTask->status = 'completed';
+			$todoTask->save();
+		}
 	}
 
 }

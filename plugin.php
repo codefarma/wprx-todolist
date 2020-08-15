@@ -62,6 +62,10 @@ add_action( 'mwp_framework_init', function()
 			'icon' => 'dashicons-editor-ol',
 		],
 		'tableConfig' => [
+			'bulkActions' => [
+				'delete' => __( 'Delete', 'wprx-todolist' ),
+				'markAllTasksCompleted' => __( 'Mark All Tasks Complete', 'wprx-todolist' ),
+			],
 			'columns' => [
 				'title' => __( 'Title', 'wprx-todolist' ),
 				'user_id' => __( 'Owner', 'wprx-todolist' ),
