@@ -73,7 +73,7 @@ Switched to a new branch 'mvp-features'
 
 Now that we have a new plugin scaffolded and checked in to source control, it's time to start building out our plugin.
 
-The first thing that we should do is to think about the data that our plugin is going to need to manage, and then build out the models for that data. Data is modeled easily using the `ActiveRecord` class which is built into the framework. Based on the early requirements, it seems that we are going to need to have two sets of data:
+The first thing that we should do is to think about the data that our plugin is going to need to manage, and then build out the models for that data. Data is modeled using the `ActiveRecord` class which is built into the framework. Based on the early requirements, it seems that we are going to need to have two sets of data:
 
 * To Do Lists
 * Tasks
@@ -305,7 +305,7 @@ print_r("My new list has ID: " . $list->id());
 
 ## Generate an Admin Interface
 
-The next thing we want to do is generate an administrative interface in the WP Admin that admin users can use to manage all to do lists using a GUI. This is a fairly trivial task using the MWP Framework.
+The next thing we want to do is generate an administrative interface in the WP Admin that admin users can use to manage all to do lists using a GUI. There is a pattern for this already built into the MWP Framework.
 
 The preferred hook to register your admin interfaces using the MWP Framework is the 'mwp_framework_init' action. Therefore, an ideal place to put the code which registers your admin pages is inside the existing callback which is already registered to the 'mwp_framework_init' action by your plugin.php file.
 
