@@ -12,6 +12,8 @@ Initial Requirements:
 
 ## Scaffolding 
 
+If you don't already have a local WP install which is already in MWP developer mode, follow the [setup instructions here](https://www.codefarma.com/docs/mwp-framework/setup/).
+
 ### Update Framework:
 `$ wp plugin install https://github.com/codefarma/mwp-framework/raw/master-2.x/builds/mwp-framework-stable.zip --activate --force`
 
