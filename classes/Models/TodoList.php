@@ -109,6 +109,20 @@ class _TodoList extends ActiveRecord
 	{
 		$actions = parent::getControllerActions();
 		unset( $actions['view'] );
+
+		$actions = array_replace( array(
+			'edit' => array(),
+			'copy' => array(
+				'title' => __( 'Copy ' . $this->_getSingularName(), 'wprx-todolist' ),
+				'icon' => 'glyphicon glyphicon-copy',
+				'params' => array(
+					'do' => 'copy',
+					'id' => $this->id(),
+				),
+			),
+			'delete' => array(),
+		), $actions );
+
 		return $actions;
 	}
 
