@@ -18,6 +18,7 @@ if ( class_exists( 'WPRXTodoListPlugin' ) ) {
 }
 
 use WPRX\TodoList\Models;
+use WPRX\TodoList\Controllers;
 
 /* Autoloaders */
 include_once __DIR__ . '/includes/plugin-bootstrap.php';
@@ -52,6 +53,9 @@ add_action( 'mwp_framework_init', function()
 	
 	/* Register settings to a WP Admin page */
 	// $framework->attach( $settings );
+
+	// Set custom controller classes
+	Models\TodoList::setControllerClass( Controllers\TodoController::class );
 
 	Models\TodoList::createController('admin', [
 		'adminPage' => [
