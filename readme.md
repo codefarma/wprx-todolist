@@ -771,9 +771,9 @@ Let's add a new bulk action to our todo lists that we can use to complete all ta
 Reference:  
 https://github.com/codefarma/wprx-todolist/commit/5abd10bb0dc92ec2dd7d6c3892e597cfc2df7d57
 
-### Add ability to copy a todo list
+### Add Ability To Copy A TodoList
 
-It would be nice to have the ability to copy existing todo lists, including the tasks that are assigned to them. The `ActiveRecord` model already has a `copy()` method that you can use to copy the record, but that will not automatically create copies of all the tasks that exist for the todo list being copied. For this exercise, we'll override the `copy()` method on our model to add the additional task copying functionality, and then we'll create a nice action dropdown in our admin interface that we can use to initiate a "copy" workflow.
+It would be nice to have the ability to copy existing todo lists, including the tasks that are assigned to them. The `ActiveRecord` model already has a `copy()` method that you can use to copy the record, but that will not automatically create copies of all the tasks that exist for the todo list being copied. For this exercise, we'll override the `copy()` method on our model to add the additional task copying functionality, and then we'll create a nice action dropdown in our admin interface that we can use to initiate the "copy" workflow.
 
 **Modify copy() behavior:**
 
@@ -806,9 +806,9 @@ https://github.com/codefarma/wprx-todolist/commit/b05d928783a4139bd3de7bd508b333
 
 **Add a custom "Copy" action to the TodoList model:**
 
-The next thing we will do is add a new action link for TodoList records in the management table which we can use to initiate a "copy" workflow. In this workflow, we will select the "Copy" action associated with the record in its row within the management table, and then we will redirect the user to the edit screen for the new TodoList copy so that the user can change any of its attributes or tasks as needed.
+The next thing we need to do is add a new action ability for TodoList records in the management table which we can use to initiate the "copy" workflow. In this workflow, we will select the "Copy" action link associated with the record in the management table, which will copy the record and redirect the user to the edit screen of the copied record so that the user can change its attributes as needed.
 
-The default controller model for the TodoList must be customized at this point so that we can add a new 'do_copy()' method to process the request.
+To implement this, we must first customize the default controller model for the TodoList, and add a new `do_copy()` method to process our copy requests.
 
 Start by scaffolding a new class to use as a controller for our `TodoList` model.
 
@@ -854,8 +854,6 @@ class _TodoController extends ActiveRecordController
 }
 ```
 
-We now have a custom controller class that we can add additional behaviors to.
-
 Reference:  
 https://github.com/codefarma/wprx-todolist/commit/4e0f22e7184f5b139229914ec8dbd4ae17145568
 
@@ -872,7 +870,7 @@ We'll also need to set our `TodoList` class to use our new custom controller cla
 Reference:  
 https://github.com/codefarma/wprx-todolist/commit/2c8e7e4a7235b02e035f5fa0b539b5ede59967d5
 
-Next, we'll add a `do_copy()` method to our custom controller that we can use to handle the record copy workflow from our management table.
+Next, we'll add a `do_copy()` method to our custom controller that we can use to handle the record copy workflow in our management table.
 
 ```php
 	/**
@@ -903,7 +901,7 @@ Next, we'll add a `do_copy()` method to our custom controller that we can use to
 Reference:  
 https://github.com/codefarma/wprx-todolist/commit/b5e5ccebbd82ed003c09caf968d2d9a1c60f7989
 
-Finally, we'll add an action link to perform the copy to the record management table.
+Finally, we'll add an action link to to our TodoList records that we can use to trigger the "Copy" workflow.
 
 ```php
 	/**
