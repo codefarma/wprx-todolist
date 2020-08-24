@@ -771,6 +771,171 @@ Let's add a new bulk action to our todo lists that we can use to complete all ta
 Reference:  
 https://github.com/codefarma/wprx-todolist/commit/5abd10bb0dc92ec2dd7d6c3892e597cfc2df7d57
 
+### Add ability to copy a todo list
+
+It would be nice to have the ability to copy existing todo lists, including the tasks that are assigned to them. The `ActiveRecord` model already has a `copy()` method that you can use to copy the record, but that will not automatically create copies of all the tasks that exist for the todo list being copied. For this exercise, we'll override the `copy()` method on our model to add the additional task copying functionality, and then we'll create a nice action dropdown in our admin interface that we can use to initiate a "copy" workflow.
+
+**Modify copy() behavior:**
+
+```php
+	/**
+	 * [ActiveRecord] Copy this record
+	 *
+	 * @return	ActiveRecord
+	 */
+	public function copy()
+	{
+		$copy = parent::copy();
+		$copy->title = 'Copy of ' . $this->title;
+		$copy->save();
+
+		// Copy each of the todo tasks
+		foreach( $this->getTasks() as $task ) {
+			$task_copy = $task->copy();
+			$task_copy->list_id = $copy->id();
+			$task_copy->status = 'todo';
+			$task_copy->save();
+		}
+
+		return $copy;
+	}
+```
+
+Reference:  
+https://github.com/codefarma/wprx-todolist/commit/b05d928783a4139bd3de7bd508b3337112274b87
+
+**Add a custom "Copy" action to the TodoList model:**
+
+The next thing we will do is add a new action link for TodoList records in the management table which we can use to initiate a "copy" workflow. In this workflow, we will select the "Copy" action associated with the record in its row within the management table, and then we will redirect the user to the edit screen for the new TodoList copy so that the user can change any of its attributes or tasks as needed.
+
+The default controller model for the TodoList must be customized at this point so that we can add a new 'do_copy()' method to process the request.
+
+Start by scaffolding a new class to use as a controller for our `TodoList` model.
+
+`$ wp mwp add-class wprx-todolist "Controllers\TodoController" --type=model_controller`
+
+```
+Creating new plugin class file...
+Success: Class added sucessfully.
+```
+
+```php
+/**
+ * TodoController [ActiveRecordController]
+ *
+ * Created:   August 24, 2020
+ *
+ * @package:  To Do List
+ * @author:   Kevin Carwile
+ * @since:    {build_version}
+ */
+namespace WPRX\TodoList\Controllers;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	die( 'Access denied.' );
+}
+
+use MWP\Framework\Helpers\ActiveRecordController;
+
+/**
+ * TodoController Class
+ */
+class _TodoController extends ActiveRecordController
+{
+	/**
+	 * Initialize
+	 *
+	 * @return    void
+	 */
+	public function init()
+	{
+		
+	}
+}
+```
+
+We now have a custom controller class that we can add additional behaviors to.
+
+Reference:  
+https://github.com/codefarma/wprx-todolist/commit/4e0f22e7184f5b139229914ec8dbd4ae17145568
+
+We'll also need to set our `TodoList` class to use our new custom controller class when creating a new controller.
+
+```php
+	use WPRX\TodoList\Models;
++	use WPRX\TodoList\Controllers;
+
+	// Set custom controller classes
++	Models\TodoList::setControllerClass( Controllers\TodoController::class );
+```
+
+Reference:  
+https://github.com/codefarma/wprx-todolist/commit/2c8e7e4a7235b02e035f5fa0b539b5ede59967d5
+
+Next, we'll add a `do_copy()` method to our custom controller that we can use to handle the record copy workflow from our management table.
+
+```php
+	/**
+	 * Copy a record
+	 *
+	 */
+	public function do_copy()
+	{
+		$controller = $this;
+		$class = $this->recordClass;
+
+		if ( ! $record ) {
+			try	{
+				$record = $class::load( isset( $_REQUEST['id'] ) ? $_REQUEST['id'] : 0 );
+			}
+			catch( \OutOfRangeException $e ) { 
+ 				echo $this->error( __( 'The record could not be loaded.', 'mwp-framework' ) . ' Class: ' . $this->recordClass . ' ' . ', ID: ' . ( (int) $_REQUEST['id'] ) );
+				return;
+			}
+		}
+
+		$copy = $record->copy();
+		wp_redirect( $controller->getUrl([ 'do' => 'edit', 'id' => $copy->id() ]) );
+		exit;
+	}
+```
+
+Reference:  
+https://github.com/codefarma/wprx-todolist/commit/b5e5ccebbd82ed003c09caf968d2d9a1c60f7989
+
+Finally, we'll add an action link to perform the copy to the record management table.
+
+```php
+	/**
+	 * Get controller actions
+	 *
+	 * @return	array
+	 */
+	public function getControllerActions()
+	{
+		$actions = parent::getControllerActions();
+		unset( $actions['view'] );
++
++		$actions = array_replace( array(
++			'edit' => array(),
++			'copy' => array(
++				'title' => __( 'Copy ' . $this->_getSingularName(), 'wprx-todolist' ),
++				'icon' => 'glyphicon glyphicon-copy',
++				'params' => array(
++					'do' => 'copy',
++					'id' => $this->id(),
++				),
++			),
++			'delete' => array(),
++		), $actions );
+
+		return $actions;
+	}
+```
+
+Reference:  
+https://github.com/codefarma/wprx-todolist/commit/f8dbfb410a26656251b771dff14d113c1de06b3e
+
 Tutorial roadmap:
 
 * User select autocomplete on list edit form
