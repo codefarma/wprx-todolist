@@ -228,4 +228,26 @@ class _TodoList extends ActiveRecord
 		}
 	}
 
+	/**
+	 * [ActiveRecord] Copy this record
+	 *
+	 * @return	ActiveRecord
+	 */
+	public function copy()
+	{
+		$copy = parent::copy();
+		$copy->title = 'Copy of ' . $this->title;
+		$copy->save();
+
+		// Copy each of the todo tasks
+		foreach( $this->getTasks() as $task ) {
+			$task_copy = $task->copy();
+			$task_copy->list_id = $copy->id();
+			$task_copy->status = 'todo';
+			$task_copy->save();
+		}
+
+		return $copy;
+	}
+
 }
