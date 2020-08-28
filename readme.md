@@ -6,9 +6,9 @@ Build a todo list plugin for WordPress which allows the user to create "To Do" l
 
 Initial Requirements:
 
-* Admin users can create new To Do lists with the following attributes: (Title, Owner)
-* Admin users can create tasks associated with To Do lists with the following attributes: (Title, Status, List Order)
-* Admin users can update the status of tasks in the To Do list
+* Users can create new To Do lists with the following attributes: (Title, Owner)
+* Users can create tasks associated with To Do lists with the following attributes: (Title, Status, List Order)
+* Users can update the status of tasks in the To Do list
 
 ## Scaffolding 
 
